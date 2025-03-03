@@ -20,15 +20,8 @@ Follow these steps to set up and run the FastAPI application:
  
 
 2. **Activate the Virtual Environment**
-
-    - On Windows:
-
-      venv\Scripts\activate
-
-
-    - On macOS and Linux:
-
-      source venv/bin/activate
+    
+    source venv/Scripts/activate
     
 
 3. **Install Dependencies**
@@ -56,7 +49,9 @@ Follow these steps to set up and run the FastAPI application:
 
 - To update requirements.txt when installing new libraries, simply run:
 
-pip freeze > requirements.txt
+    * Make sure your inside virtual enviroment first*
+        pip freeze > requirements.txt
+
 
 
 - Ensure you have a `requirements.txt` file in your project directory with all the necessary dependencies listed.

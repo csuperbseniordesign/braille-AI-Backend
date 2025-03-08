@@ -1,1 +1,10 @@
 *.venv
+# Ignore all __pycache__ directories
+__pycache__/
+
+# Ignore all Python bytecode files
+*.pyc
+*.pyo
+*.pyd
+
+app/__pycache__/main.cpython-313.pyc

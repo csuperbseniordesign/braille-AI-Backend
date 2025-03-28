@@ -8,6 +8,8 @@ import json
 run_system_check()
 app = FastAPI()
 
+def printMessage():
+    print('hello')
 
 @app.get("/")
 async def root():

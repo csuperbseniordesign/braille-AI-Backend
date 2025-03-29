@@ -15,7 +15,7 @@ MYSQL_DB = os.getenv("MYSQL_DB")
 MYSQL_PORT = os.getenv("MYSQL_PORT")
 
 # database url
-DATABASE_URL = f"mysql+mysqlconnector://apcsa2020:csulasuperb_2025@47.33.78.253:3306/Braille_AI"
+DATABASE_URL = f"mysql+mysqlconnector://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DB}"
 
 # set up SQLAlchemy
 engine = create_engine(DATABASE_URL)

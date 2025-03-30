@@ -8,12 +8,18 @@ import random
 from app.models import Base, Paragraph, Student, ModifiedParagraph, engine, SessionLocal
 from app.schemas import ParagraphSchema, StudentSchema, ModifiedParagraphSchema
 from sqlalchemy.orm import Session
-
+from fastapi.middleware.cors import CORSMiddleware
 
 run_system_check()
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Allow only this origin (frontend)
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],  # Allow only these methods
+    allow_headers=["*"],  # Allow any headers
+)
 def get_db():
     db = SessionLocal()
     try:
@@ -60,7 +66,8 @@ async def generate_text(request: Request):
 
         return response_json
 
-@app.post("/paragraphs/")
+# needs explanation on how this works
+@app.get("/paragraphs/")
 def create_paragraph(paragraph: ParagraphSchema, db: Session = Depends(get_db)):
     db_paragraph = Paragraph(**paragraph.model_dump())
     db.add(db_paragraph)
@@ -72,13 +79,22 @@ def create_paragraph(paragraph: ParagraphSchema, db: Session = Depends(get_db)):
 @app.get("/paragraphs/{interest}/{min_atos}/{max_atos}")
 def read_paragraph(interest: str,min_atos: float, max_atos : float, db: Session = Depends(get_db)):
     query = db.query(Paragraph)
-    print(query)
     query = query.filter(Paragraph.atos.between(min_atos, max_atos))
     query = query.filter(Paragraph.interest == interest)
     paragraph = query.all()
     if not paragraph:
         raise HTTPException(status_code=404, detail="Paragraph not found")
     return random.choice(paragraph)
+
+@app.get("/paragraph/{paragraph_id}")
+def get_paragraph(paragraph_id: int, db: Session = Depends(get_db)):
+    paragraph = db.query(Paragraph).filter(Paragraph.id == paragraph_id).first()
+    
+    if not paragraph:
+        print(f"Paragraph with ID {paragraph_id} not found.")  # Logs the issue
+        raise HTTPException(status_code=404, detail=f"Paragraph {paragraph_id} not found")
+    
+    return paragraph
 
 @app.post("/students/")
 def create_student(student: StudentSchema, db: Session = Depends(get_db)):

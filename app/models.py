@@ -35,6 +35,11 @@ class Paragraph(Base):
     q1a2 = Column(String(255))
     q1a3 = Column(String(255))
     q1a4 = Column(String(255))
+    q2 = Column(String(255))
+    q2a1 = Column(String(255))
+    q2a2 = Column(String(255))
+    q2a3 = Column(String(255))
+    q2a4 = Column(String(255))
     interest = Column(String(255))
 
 # table for student

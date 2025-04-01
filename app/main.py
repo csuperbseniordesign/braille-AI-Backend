@@ -85,6 +85,7 @@ def read_paragraph(interest: str,min_atos: float, max_atos : float, db: Session 
     if not paragraph:
         raise HTTPException(status_code=404, detail="Paragraph not found")
     return random.choice(paragraph)
+  
 
 @app.get("/paragraph/{paragraph_id}")
 def get_paragraph(paragraph_id: int, db: Session = Depends(get_db)):
@@ -93,8 +94,27 @@ def get_paragraph(paragraph_id: int, db: Session = Depends(get_db)):
     if not paragraph:
         print(f"Paragraph with ID {paragraph_id} not found.")  # Logs the issue
         raise HTTPException(status_code=404, detail=f"Paragraph {paragraph_id} not found")
+
+    formatted_paragraph = {
+        "id" : paragraph.id,
+        "title": paragraph.title,
+        "paragraph": paragraph.paragraph,
+        "atos": paragraph.atos,
+        "word_count" : paragraph.word_count,
+        "interest" : paragraph.interest,
+       "questions": [
+            {
+                "question": paragraph.q1,
+                "options": [paragraph.q1a1, paragraph.q1a2, paragraph.q1a3, paragraph.q1a4]
+            },
+            {
+                "question": paragraph.q2,
+                "options": [paragraph.q2a1, paragraph.q2a2, paragraph.q2a3, paragraph.q2a4]
+            }
+        ]}
     
-    return paragraph
+
+    return formatted_paragraph
 
 @app.post("/students/")
 def create_student(student: StudentSchema, db: Session = Depends(get_db)):

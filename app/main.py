@@ -9,6 +9,7 @@ from app.models import Base, Paragraph, Student, ModifiedParagraph, engine, Sess
 from app.schemas import ParagraphSchema, StudentSchema, ModifiedParagraphSchema
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
+from app.utils.data_formater import format_to_paragraph_object
 
 run_system_check()
 Base.metadata.create_all(bind=engine)
@@ -95,25 +96,9 @@ def get_paragraph(paragraph_id: int, db: Session = Depends(get_db)):
         print(f"Paragraph with ID {paragraph_id} not found.")  # Logs the issue
         raise HTTPException(status_code=404, detail=f"Paragraph {paragraph_id} not found")
 
-    formatted_paragraph = {
-        "id" : paragraph.id,
-        "title": paragraph.title,
-        "paragraph": paragraph.paragraph,
-        "atos": paragraph.atos,
-        "word_count" : paragraph.word_count,
-        "interest" : paragraph.interest,
-       "questions": [
-            {
-                "question": paragraph.q1,
-                "options": [paragraph.q1a1, paragraph.q1a2, paragraph.q1a3, paragraph.q1a4]
-            },
-            {
-                "question": paragraph.q2,
-                "options": [paragraph.q2a1, paragraph.q2a2, paragraph.q2a3, paragraph.q2a4]
-            }
-        ]}
+    formatted_paragraph = format_to_paragraph_object(paragraph)
     
-
+    
     return formatted_paragraph
 
 @app.post("/students/")

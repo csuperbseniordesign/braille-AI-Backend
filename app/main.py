@@ -88,7 +88,7 @@ def read_paragraph(interest: str,min_atos: float, max_atos : float, db: Session 
     return random.choice(paragraph)
   
 
-@app.get("/paragraph/{paragraph_id}")
+@app.get("/paragraph/{paragraph_id}/{name}/{gender}")
 def get_paragraph(paragraph_id: int, db: Session = Depends(get_db)):
     paragraph = db.query(Paragraph).filter(Paragraph.id == paragraph_id).first()
     

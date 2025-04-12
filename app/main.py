@@ -88,15 +88,15 @@ def read_paragraph(interest: str,min_atos: float, max_atos : float, db: Session 
     return random.choice(paragraph)
   
 
-@app.get("/paragraph/{paragraph_id}/{name}/{gender}")
-def get_paragraph(paragraph_id: int, db: Session = Depends(get_db)):
+@app.get("/paragraph/{paragraph_id}/{name}")
+def get_paragraph(paragraph_id: int, name: str, db: Session = Depends(get_db)):
     paragraph = db.query(Paragraph).filter(Paragraph.id == paragraph_id).first()
     
     if not paragraph:
         print(f"Paragraph with ID {paragraph_id} not found.")  # Logs the issue
         raise HTTPException(status_code=404, detail=f"Paragraph {paragraph_id} not found")
 
-    formatted_paragraph = format_to_paragraph_object(paragraph)
+    formatted_paragraph = format_to_paragraph_object(paragraph, name)
     
     
     return formatted_paragraph

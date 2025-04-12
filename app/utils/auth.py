@@ -27,11 +27,4 @@ def get_api_key():
     return api_key
 
 def fetch_model_api_key() -> str:
-    api_key = os.getenv("MODEL_KEY")
-
-    # if api key doesn't exist in enviroment variable, return local model key
-    if not api_key:
-        print('\033[91mModel Api Key not Found, returning Local Model Api Key\033[0m')
-        return "http://localhost:11434/api/generate"
-    
-    return api_key
+    return os.getenv("DEEPSEEK_API")

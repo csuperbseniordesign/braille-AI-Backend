@@ -1,5 +1,5 @@
 from app.models import Paragraph
-from app.utils.name_changer import modify_name
+from app.utils.auth import fetch_model_api_key
 from app.utils.deepseek_request import modify_question
 
 def refine_option(option: list) -> list:
@@ -19,6 +19,9 @@ def refine_option(option: list) -> list:
     return answer.strip(), option_list
 
 def format_to_paragraph_object(paragraph: Paragraph, target_name: str) -> dict:
+    # get deepseek api key
+    api_key = fetch_model_api_key()
+
     # find option1 & answer1 for question1
     answer1, options1 = refine_option([paragraph.q1a1, paragraph.q1a2, paragraph.q1a3, paragraph.q1a4])
 
@@ -40,7 +43,10 @@ def format_to_paragraph_object(paragraph: Paragraph, target_name: str) -> dict:
         ]
     }
 
+    if not api_key:
+        return paragraph
+    
     # call api to modify name and pronouns in questions
-    modified_question = modify_question(questions=questions, name=target_name, api_key="")
+    modified_question = modify_question(questions=questions, name=target_name, api_key=api_key)
 
     return modified_question

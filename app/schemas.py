@@ -21,7 +21,6 @@ class StudentSchema(BaseModel):
     grade: str
     ethnicity : str
     gender: str
-    modified_paragraph_id: int
     q1_result: int
     q2_result: int
     cr1_result : int
@@ -33,10 +32,30 @@ class StudentSchema(BaseModel):
     cr7_result : int
     cr8_result : int
     interest : str
+    born : str
+    region : str
+    year : int
+    modified_paragraph_id : int
 
 class ModifiedParagraphSchema(BaseModel):
-    student_id : int
     paragraph : str
     atos : float
     used : int
     cr_avg: float
+    ethnicity :str
+    gender : str
+    q1 : str
+    q1a1 : str
+    q1a2 : str
+    q1a3 : str
+    q1a4 : str
+    q2 : str
+    q2a1 : str
+    q2a2 : str
+    q2a3 : str
+    q2a4 : str
+    interest : str
+
+class StudentModifiedParagraphSchema(BaseModel):
+    student_id : int
+    modified_paragraph_id : int

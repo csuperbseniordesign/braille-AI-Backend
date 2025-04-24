@@ -8,11 +8,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # database credentials
-MYSQL_USER = ""
-MYSQL_PASSWORD = ""
-MYSQL_HOST = ""
-MYSQL_DB = ""
-MYSQL_PORT = ""
+MYSQL_USER = "apcsa2020"# os.getenv("MYSQL_USER")
+MYSQL_PASSWORD = "csulasuperb_2025"# os.getenv("MYSQL_PASSWORD")
+MYSQL_HOST = "47.33.78.253"# os.getenv("MYSQL_HOST")
+MYSQL_DB = "Braille_AI"# os.getenv("MYSQL_DB")
+MYSQL_PORT = 3306# os.getenv("MYSQL_PORT")
 
 # database url
 DATABASE_URL = f"mysql+mysqlconnector://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DB}"
@@ -64,6 +64,8 @@ class Student(Base):
     region = Column(String(255))
     year = Column(Integer)
     modified_paragraph_id = Column(Integer)
+    reading_grade = Column(String(45))
+    from_SA = Column(Boolean)
     modified_paragraph_links = relationship(
         "StudentModifiedParagraph",
         back_populates = "student"

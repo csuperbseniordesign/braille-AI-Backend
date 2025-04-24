@@ -36,6 +36,9 @@ class StudentSchema(BaseModel):
     region : str
     year : int
     modified_paragraph_id : int
+    reading_grade : str
+    from_SA : int
+    
 
 class ModifiedParagraphSchema(BaseModel):
     paragraph : str

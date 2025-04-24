@@ -1,7 +1,7 @@
-# from fastapi.testclient import TestClient
-# from app.main import app
+from fastapi.testclient import TestClient
+from app.main import app
 
-# client = TestClient(app)
+client = TestClient(app)
 #### (Use in bash to test post)
 ## PYTHONPATH=. pytest  
 ####
@@ -63,33 +63,35 @@
 
 
 # function to send a request to submit a student form to mysql
-# def test_create_student_paragraph():
-#     student_data = {
-#     "grade": "4",
-#     "ethnicity" : "asian",
-#     "gender": "male",
-#     "q1_result": 1,
-#     "q2_result": 0,
-#     "cr1_result" : 1,
-#     "cr2_result" : 2,
-#     "cr3_result" : 3,
-#     "cr4_result" : 4,
-#     "cr5_result" : 1,
-#     "cr6_result" : 2,
-#     "cr7_result" : 3,
-#     "cr8_result" : 4,
-#     "interest" : "entertainment",
-#     "born" : "China",
-#     "region" : "midwest",
-#     "year" : 2001,
-#     "modified_paragraph_id" : 3
-#     }
-#     response = client.post("/students/", json=student_data)
-#     assert response.status_code == 200
-#     # test to see if the json is added to the database
-#     data = response.json()
-#     assert data["grade"] == "4"
-#     assert "id" in data
+def test_create_student_paragraph():
+    student_data = {
+    "grade": "4",
+    "ethnicity" : "asian",
+    "gender": "male",
+    "q1_result": 1,
+    "q2_result": 0,
+    "cr1_result" : 1,
+    "cr2_result" : 2,
+    "cr3_result" : 3,
+    "cr4_result" : 4,
+    "cr5_result" : 1,
+    "cr6_result" : 2,
+    "cr7_result" : 3,
+    "cr8_result" : 4,
+    "interest" : "entertainment",
+    "born" : "China",
+    "region" : "midwest",
+    "year" : 2001,
+    "modified_paragraph_id" : 3,
+    "reading_grade" : "3",
+    "from_SA" : 0
+    }
+    response = client.post("/students/", json=student_data)
+    assert response.status_code == 200
+    # test to see if the json is added to the database
+    data = response.json()
+    assert data["grade"] == "4"
+    assert "id" in data
 
 # function to send a request to submit a student form to mysql
 # def test_create_student_modified_paragraph():

@@ -42,7 +42,7 @@ class Paragraph(Base):
     q2a4 = Column(String(255))
     interest = Column(String(255))
 
-# table for student
+# table for student 
 class Student(Base):
     __tablename__ = "student"
     id = Column(Integer, primary_key=True,index=True,unique=True,autoincrement=True)
@@ -65,7 +65,8 @@ class Student(Base):
     year = Column(Integer)
     modified_paragraph_id = Column(Integer)
     reading_grade = Column(String(45))
-    from_SA = Column(Boolean)
+    from_NA = Column(Boolean)
+    ethnicity_subgroup = Column(String(100))
     modified_paragraph_links = relationship(
         "StudentModifiedParagraph",
         back_populates = "student"

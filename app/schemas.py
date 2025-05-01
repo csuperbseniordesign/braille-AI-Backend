@@ -18,9 +18,6 @@ class ParagraphSchema(BaseModel):
     interest: str
 
 class StudentSchema(BaseModel):
-    grade: str
-    ethnicity : str
-    gender: str
     q1_result: int
     q2_result: int
     cr1_result : int
@@ -31,14 +28,20 @@ class StudentSchema(BaseModel):
     cr6_result : int
     cr7_result : int
     cr8_result : int
-    interest : str
-    born : str
-    region : str
-    year : int
     modified_paragraph_id : int
+
+
+class StudentSchemaInital(BaseModel):
+    grade : str
     reading_grade : str
-    from_SA : int
-    
+    gender : str
+    ethnicity : str
+    ethnicity_subgroup : str
+    from_NA : int
+    born : str
+    year : int
+    region : str
+    interest : str
 
 class ModifiedParagraphSchema(BaseModel):
     paragraph : str

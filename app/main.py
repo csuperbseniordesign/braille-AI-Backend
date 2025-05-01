@@ -6,7 +6,7 @@ import httpx
 import json
 import random
 from app.models import Base, Paragraph, Student, ModifiedParagraph, StudentModifiedParagraph, engine, SessionLocal
-from app.schemas import ParagraphSchema, StudentSchema, ModifiedParagraphSchema, StudentModifiedParagraphSchema
+from app.schemas import ParagraphSchema, StudentSchema, ModifiedParagraphSchema, StudentModifiedParagraphSchema, StudentSchemaInital
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from app.utils.data_formater import format_to_paragraph_object
@@ -114,22 +114,42 @@ def get_paragraph(paragraph_id: int, db: Session = Depends(get_db)):
     
     return formatted_paragraph
 
-# 3rd endpoint to be used
-# add in student entry for student table. increment the modify paragraph using the id "used" value.
-# add entry for student_modified_paragraph table. 
-# takes a json and upload it to the students table in mysql. Look at schemas.py for proper json entries
+# 2nd endpoint to be used
+# add into student table with entries     
+#    grade : str
+#    reading_grade : str
+#    gender : str
+#    ethnicity : str
+#    ethnicity_subgroup : str
+#    from_NA : int
+#    year : int
+#    region : str
+#    interest : str
 @app.post("/students/")
-def create_student(student: StudentSchema, db: Session = Depends(get_db)):
+def create_student_initial(student: StudentSchemaInital, db: Session = Depends(get_db)):
     # create student entry
     db_student = Student(**student.model_dump())
     db.add(db_student)
     db.commit()
     db.refresh(db_student)
+    return db_student
 
+# add in the rest of the student entry for student table.check studentSchema in models.py.
+# increment the modify paragraph using the id "used" value.
+# add entry for student_modified_paragraph table. 
+# takes a json and upload it to the students table in mysql. Look at schemas.py for proper json entries
+@app.put("/students/{student_id}")
+def update_student_partial(student_id: int, update_data : StudentSchema, db: Session = Depends(get_db)):
+    student = db.query(Student).filter(Student.id == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    
+    for key, value in update_data.dict().items():
+        setattr(student, key, value)
     # create student_modified_paragraph entry based on the two id from student
     link = StudentModifiedParagraph(
-        student_id = db_student.id,
-        modified_paragraph_id = db_student.modified_paragraph_id
+        student_id = student.id,
+        modified_paragraph_id = student.modified_paragraph_id
     )
     db.add(link)
     # update the used value for the modified paragraph along with cr_avg
@@ -137,16 +157,16 @@ def create_student(student: StudentSchema, db: Session = Depends(get_db)):
     if modified:
         modified.used += 1
         if modified.used == 1:
-            modified.cr_avg = (db_student.cr1_result + db_student.cr2_result + db_student.cr3_result + db_student.cr4_result +
-                            db_student.cr5_result + db_student.cr6_result + db_student.cr7_result + db_student.cr8_result) /8
+            modified.cr_avg = (student.cr1_result + student.cr2_result + student.cr3_result + student.cr4_result +
+                            student.cr5_result + student.cr6_result + student.cr7_result + student.cr8_result) /8
         else:
-            next_avg = (db_student.cr1_result + db_student.cr2_result + db_student.cr3_result + db_student.cr4_result +
-                            db_student.cr5_result + db_student.cr6_result + db_student.cr7_result + db_student.cr8_result) /8
+            next_avg = (student.cr1_result + student.cr2_result + student.cr3_result + student.cr4_result +
+                            student.cr5_result + student.cr6_result + student.cr7_result + student.cr8_result) /8
             modified.cr_avg = ((modified.cr_avg * (modified.used-1)) + next_avg) / modified.used
         db.add(modified)
     db.commit()
     db.refresh
-
+    
 
 @app.get("/students/{student_id}")
 def read_student(student_id: int, db: Session = Depends(get_db)):

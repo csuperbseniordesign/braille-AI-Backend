@@ -2,20 +2,14 @@ from sqlalchemy import Column, Integer, String, Float, ForeignKey, create_engine
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 import os
-from dotenv import load_dotenv
-
-# load from .env file
-load_dotenv()
 
 # database credentials
-MYSQL_USER = ""# os.getenv("MYSQL_USER")
-MYSQL_PASSWORD = ""# os.getenv("MYSQL_PASSWORD")
-MYSQL_HOST = ""# os.getenv("MYSQL_HOST")
-MYSQL_DB = ""# os.getenv("MYSQL_DB")
-MYSQL_PORT = 3306# os.getenv("MYSQL_PORT")
+MYSQL_USER = os.getenv("MYSQL_USER")
+MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
+MYSQL_HOST = os.getenv("MYSQL_HOST")
 
 # database url
-DATABASE_URL = f"mysql+mysqlconnector://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DB}"
+DATABASE_URL = f"mysql+mysqlconnector://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:3306/BrailleAI"
 
 # set up SQLAlchemy
 engine = create_engine(DATABASE_URL)

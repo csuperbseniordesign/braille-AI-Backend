@@ -1,7 +1,6 @@
+from contextlib import asynccontextmanager
 from app.utils.auth import verify_api_key, fetch_model_api_key
-from app.utils.sys_check import run_system_check
-from fastapi import FastAPI, Depends, Request, Response, HTTPException
-from fastapi.security.api_key import APIKeyHeader
+from fastapi import FastAPI, Depends, Request, HTTPException
 import httpx
 import json
 import random
@@ -10,23 +9,43 @@ from app.schemas import ParagraphSchema, StudentSchema, ModifiedParagraphSchema,
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from app.utils.data_formater import format_to_paragraph_object
+from sqlalchemy import text
+from sqlalchemy.exc import OperationalError
 
-run_system_check()
-Base.metadata.create_all(bind=engine)
-app = FastAPI()
+# Lifespan context manager
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    try:
+        with engine.connect() as connection:
+            connection.execute(text('SELECT 1'))
+        print("Connect to DB on startup")
+    
+    except OperationalError as e:
+        print('Could not connect to DB')
+        raise RuntimeError("DB not reachable") from e
+    
+    yield 
+
+    # Shutdown login if needed
+    print("Shutting down backend")
+
+# Base.metadata.create_all(bind=engine)
+app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],  # Allow only this origin (frontend)
     allow_credentials=True,
-    allow_methods=["GET", "POST"],  # Allow only these methods
+    allow_methods=["GET", "POST", 'PUT'],  # Allow only these methods
     allow_headers=["*"],  # Allow any headers
 )
+
 def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
+
 
 @app.get("/")
 async def root():
@@ -41,7 +60,6 @@ async def generate_text(request: Request):
     # extract raw json data
     data = await request.json()
     
-
     # check if prompt exist
     prompt = data.get("prompt")
 

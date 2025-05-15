@@ -17,7 +17,7 @@ Base = declarative_base()
 
 # table for preselected paragraph
 class Paragraph(Base):
-    __tablename__ = "paragraphs"
+    __tablename__ = "paragraph"
     id = Column(Integer, primary_key=True, index=True,unique=True)
     title = Column(String(255), index=True)
     paragraph = Column(Text)

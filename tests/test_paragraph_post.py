@@ -63,39 +63,45 @@ client = TestClient(app)
 
 
 # function to send a request to submit a student form to mysql
-# def test_create_student_initial():
-#     student_data_initial = {
-#     "grade": "4",
-#     "reading_grade" : "3",
-#     "gender": "male",
-#     "ethnicity" : "asian",
-#     "ethnicity_subgroup" : "vietnamese",
-#     "from_NA" : 1,
-#     "born" : "China",
-#     "year" : 2001,
-#     "region" : "midwest",
-#     "interest" : "entertainment"
-#     }
-#     response = client.post("/students/", json=student_data_initial)
-#     assert response.status_code == 200
-#     # test to see if the json is added to the database
-#     student_id = response.json()["id"]
+def test_create_student_initial():
+    student_data_initial = {
+    "grade": "4",
+    "reading_grade" : "3",
+    "gender": "male",
+    "ethnicity" : "asian",
+    "ethnicity_subgroup" : "vietnamese",
+    "from_SA" : 1,
+    "born" : "China",
+    "year" : 2001,
+    "region" : "midwest",
+    "interest" : "entertainment",
+    "language_home" : "vietnamese",
+    "student_id_alt" : "564DR7"
+    }
+    response = client.post("/students/", json=student_data_initial)
+    assert response.status_code == 200
+    # test to see if the json is added to the database
+    student_id = response.json()["id"]
 
-#     student_data = {
-#         "q1_result" : True,
-#         "q2_result" : False,
-#         "cr1_result" : 1,
-#         "cr2_result" : 1,
-#         "cr3_result" : 1,
-#         "cr4_result" : 1,
-#         "cr5_result" : 1,
-#         "cr6_result" : 1,
-#         "cr7_result" : 1,
-#         "cr8_result" : 1,
-#         "modified_paragraph_id" : 2
-#     }
-#     response1 = client.put(f"/students/{student_id}", json = student_data)
-#     assert response1.status_code == 200
+    student_data = {
+        "q1_result" : True,
+        "q2_result" : False,
+        "cr1_result" : 1,
+        "cr2_result" : 1,
+        "cr3_result" : 1,
+        "cr4_result" : 1,
+        "cr5_result" : 1,
+        "cr6_result" : 1,
+        "cr7_result" : 1,
+        "cr8_result" : 1,
+        "cr9_result" : 1,
+        "cr10_result" : 1,
+        "cr11_result" : 1,
+        "cr12_result" : 1,        
+        "modified_paragraph_id" : 2
+    }
+    response1 = client.put(f"/students/{student_id}", json = student_data)
+    assert response1.status_code == 200
  
 # function to send a request to submit a student form to mysql
 # def test_create_student_modified_paragraph():

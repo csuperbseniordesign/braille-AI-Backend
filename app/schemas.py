@@ -28,6 +28,10 @@ class StudentSchema(BaseModel):
     cr6_result : int
     cr7_result : int
     cr8_result : int
+    cr9_result : int
+    cr10_result : int
+    cr11_result : int
+    cr12_result : int
     modified_paragraph_id : int
 
 
@@ -37,11 +41,14 @@ class StudentSchemaInital(BaseModel):
     gender : str
     ethnicity : str
     ethnicity_subgroup : str
-    from_NA : int
+    from_SA : int
     born : str
     year : int
     region : str
     interest : str
+    student_id_alt : str
+    language_home : str
+    
 
 class ModifiedParagraphSchema(BaseModel):
     paragraph : str

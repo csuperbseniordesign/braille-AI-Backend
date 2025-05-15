@@ -52,14 +52,20 @@ class Student(Base):
     cr6_result = Column(Integer)
     cr7_result = Column(Integer)
     cr8_result = Column(Integer)
+    cr9_result = Column(Integer)
+    cr10_result = Column(Integer)
+    cr11_result = Column(Integer)
+    cr12_result = Column(Integer)
     interest = Column(String(100))
     born = Column(String(255))
     region = Column(String(255))
     year = Column(Integer)
     modified_paragraph_id = Column(Integer)
     reading_grade = Column(String(45))
-    from_NA = Column(Boolean)
+    from_SA = Column(Boolean)
     ethnicity_subgroup = Column(String(100))
+    student_id_alt = Column(String(6))
+    language_home = Column(String(45))
     modified_paragraph_links = relationship(
         "StudentModifiedParagraph",
         back_populates = "student"

@@ -70,11 +70,13 @@ client = TestClient(app)
 #     "gender": "male",
 #     "ethnicity" : "asian",
 #     "ethnicity_subgroup" : "vietnamese",
-#     "from_NA" : 1,
+#     "from_SA" : 1,
 #     "born" : "China",
 #     "year" : 2001,
 #     "region" : "midwest",
-#     "interest" : "entertainment"
+#     "interest" : "entertainment",
+#     "language_home" : "vietnamese",
+#     "student_id_alt" : "564DR7"
 #     }
 #     response = client.post("/students/", json=student_data_initial)
 #     assert response.status_code == 200
@@ -92,6 +94,10 @@ client = TestClient(app)
 #         "cr6_result" : 1,
 #         "cr7_result" : 1,
 #         "cr8_result" : 1,
+#         "cr9_result" : 1,
+#         "cr10_result" : 1,
+#         "cr11_result" : 1,
+#         "cr12_result" : 1,        
 #         "modified_paragraph_id" : 2
 #     }
 #     response1 = client.put(f"/students/{student_id}", json = student_data)

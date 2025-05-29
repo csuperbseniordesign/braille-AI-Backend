@@ -125,17 +125,8 @@ def get_paragraph(paragraph_id: int, name: str, db: Session = Depends(get_db)):
     
     return formatted_paragraph
 
-# 2nd endpoint to be used
-# add into student table with entries     
-#    grade : str
-#    reading_grade : str
-#    gender : str
-#    ethnicity : str
-#    ethnicity_subgroup : str
-#    from_NA : int
-#    year : int
-#    region : str
-#    interest : str
+# used in demographic form
+# check StudentSchemaInital from schemas.py to know which json field to pass
 @app.post("/students/")
 def create_student_initial(student: StudentSchemaInital, db: Session = Depends(get_db)):
     # create student entry

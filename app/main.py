@@ -7,7 +7,6 @@ import random
 from app.models import Paragraph, Student, ModifiedParagraph, StudentModifiedParagraph, engine, SessionLocal
 from app.schemas import ParagraphSchema, StudentSchema, ModifiedParagraphSchema, StudentModifiedParagraphSchema, StudentSchemaInital
 from sqlalchemy.orm import Session
-from fastapi.middleware.cors import CORSMiddleware
 from app.utils.data_formater import format_to_paragraph_object
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
@@ -31,13 +30,6 @@ async def lifespan(app: FastAPI):
 
 # Base.metadata.create_all(bind=engine)
 app = FastAPI(lifespan=lifespan)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Allow only this origin (frontend)
-    allow_credentials=True,
-    allow_methods=["GET", "POST", 'PUT'],  # Allow only these methods
-    allow_headers=["*"],  # Allow any headers
-)
 
 def get_db():
     db = SessionLocal()
@@ -104,7 +96,7 @@ def read_paragraph(interest: str,min_atos: float, max_atos : float, ethnicity : 
         ModifiedParagraph.ethnicity == ethnicity,
         ModifiedParagraph.gender == gender,
         ModifiedParagraph.atos.between(min_atos,max_atos),
-        ModifiedParagraph.used < 3
+        # ModifiedParagraph.used < 3
     ).all()
     if modified_query:
         random_modified =random.choice(modified_query)
@@ -119,6 +111,7 @@ def read_paragraph(interest: str,min_atos: float, max_atos : float, ethnicity : 
     return {"source" : "paragraph", "data" : random.choice(paragraph)}
   
 
+# Returns questions from a specific paragraph with the requested name
 @app.get("/paragraph/{paragraph_id}/{name}")
 def get_paragraph(paragraph_id: int, name: str, db: Session = Depends(get_db)):
     paragraph = db.query(Paragraph).filter(Paragraph.id == paragraph_id).first()

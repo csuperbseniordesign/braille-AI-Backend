@@ -100,10 +100,3 @@ class StudentModifiedParagraph(Base):
     modified_paragraph_id = Column(Integer, ForeignKey("modified_paragraph.id"), primary_key=True)
     student = relationship("Student", back_populates="modified_paragraph_links")
     modified_paragraph = relationship("ModifiedParagraph", back_populates="student_links")
-
-
-
-
-
-
-

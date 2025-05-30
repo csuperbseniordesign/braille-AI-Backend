@@ -1,4 +1,4 @@
-from app.models import Paragraph
+from app.model.models import Paragraph
 from app.utils.auth import fetch_model_api_key
 from app.utils.deepseek_request import modify_question
 

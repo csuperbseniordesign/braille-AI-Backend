@@ -4,7 +4,7 @@ from fastapi import FastAPI, Depends, Request, HTTPException
 import httpx
 import json
 import random
-from app.models import Paragraph, Student, ModifiedParagraph, StudentModifiedParagraph, engine, SessionLocal
+from app.model.models import Paragraph, Student, ModifiedParagraph, StudentModifiedParagraph, engine, SessionLocal
 from app.schemas import ParagraphSchema, StudentSchema, ModifiedParagraphSchema, StudentModifiedParagraphSchema, StudentSchemaInital
 from sqlalchemy.orm import Session
 from app.utils.data_formater import format_to_paragraph_object

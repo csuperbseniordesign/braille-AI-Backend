@@ -1,17 +1,9 @@
-from pydantic import BaseSettings
 from dotenv import load_dotenv
-from pathlib import Path
+import os
 
-# Load the .env file
-env_path = Path('.') / '.env'
-load_dotenv(dotenv_path=env_path)
+# Load enviroment variables from .env file
+load_dotenv()
 
-class Settings(BaseSettings):
-    SECRET_KEY: str
-    PORT: int = 8000
+# Access 
 
-    class Config:
-        env_file = '.env'
 
-# Create a single global instance
-settings = Settings()

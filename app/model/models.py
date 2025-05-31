@@ -1,18 +1,6 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, create_engine, Text, Boolean, Table
-from sqlalchemy.orm import relationship, sessionmaker, declarative_base
-import os
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, Text, Boolean
+from sqlalchemy.orm import relationship, declarative_base
 
-# database credentials
-MYSQL_USER = os.getenv("MYSQL_USER")
-MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
-MYSQL_HOST = os.getenv("MYSQL_HOST")
-
-# database url
-DATABASE_URL = f"mysql+mysqlconnector://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:3306/BrailleAI"
-
-# set up SQLAlchemy
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit = False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 # table for preselected paragraph

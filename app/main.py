@@ -1,15 +1,16 @@
 from contextlib import asynccontextmanager
-from app.utils.auth import verify_api_key, fetch_model_api_key
+from app.utils.auth import fetch_model_api_key
 from fastapi import FastAPI, Depends, Request, HTTPException
 import httpx
 import json
 import random
-from app.model.models import Paragraph, Student, ModifiedParagraph, StudentModifiedParagraph, engine, SessionLocal
+from app.model.models import Paragraph, Student, ModifiedParagraph, StudentModifiedParagraph
 from app.schema.schemas import ParagraphSchema, StudentSchema, ModifiedParagraphSchema, StudentModifiedParagraphSchema, StudentSchemaInital
 from sqlalchemy.orm import Session
 from app.utils.data_formater import format_to_paragraph_object
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
+from app.database.database_service import engine, SessionLocal
 
 # Lifespan context manager
 @asynccontextmanager
@@ -42,40 +43,6 @@ def get_db():
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
-
-@app.get("/secure-data")
-def secure_data(api_key: str = Depends(verify_api_key)):
-    return {"message": "You have access to secure data"}
-
-@app.get("/generate")
-async def generate_text(request: Request):
-    # extract raw json data
-    data = await request.json()
-    
-    # check if prompt exist
-    prompt = data.get("prompt")
-
-    # if prompt doesn't exist
-    # return error notify no prompt is given
-    if not prompt:
-        return {"error" : "Prompt is required"}
-    
-    json_data = json.dumps(data)
-    model_key = fetch_model_api_key()
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.post(model_key, data=json_data)
-
-            if response.status_code != 200:
-                return {"response" : response.status_code}
-            
-        except:
-            return {"error" : "unable to connect to local model"}
-
-        # convert response.text to json from string
-        response_json = json.loads(response.text)
-
-        return response_json
 
 # takes a json and upload it to the paragraphs table in mysql. Look at schemas.py for proper json entries
 @app.post("/paragraphs/")

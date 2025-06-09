@@ -1,0 +1,1 @@
+from .main import app  # Allows "from app import app"

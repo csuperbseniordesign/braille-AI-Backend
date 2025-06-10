@@ -18,36 +18,51 @@ class ParagraphSchema(BaseModel):
     interest: str
 
 class StudentSchema(BaseModel):
-    q1_result: int
-    q2_result: int
-    cr1_result : int
-    cr2_result : int
-    cr3_result : int
-    cr4_result : int
-    cr5_result : int
-    cr6_result : int
-    cr7_result : int
-    cr8_result : int
-    cr9_result : int
-    cr10_result : int
-    cr11_result : int
-    cr12_result : int
-    modified_paragraph_id : int
+    question1: str
+    question2: str
+    question3 : str
+    characterQuestion1 : str
+    characterQuestion2 : str
+    characterQuestion3 : str
+    characterQuestion4 : str
+    experienceQuestion1 : str
+    endingQuestion1 : str
+    endingQuestion2 : str
+    endingQuestion3 : str
+    endingQuestion4 : str
+    blank : str
+    teacher_question1 : str
+    teacher_question2 : str
+    teacher_question3: str
+    teacher_question4: str
+    teacher_question5: str
+    teacher_question6: str
+    teacher_question7: str
+    teacher_blank: str
+    comprehension_score: int
+    timeInSeconds: int
+
 
 
 class StudentSchemaInital(BaseModel):
-    grade : str
-    reading_grade : str
-    gender : str
+    code_id: str
+    gradeLevel : str
+    readingLevel : str
     ethnicity : str
-    ethnicity_subgroup : str
-    from_SA : int
-    born : str
-    year : int
-    region : str
-    interest : str
-    student_id_alt : str
-    language_home : str
+    gender: str
+    familyBackground: str
+    birthPlace: str
+    region: str
+    primaryInterest: str
+    languages: str
+    country: str
+    vision: str
+    preferredMedia: str
+    appAccess: str
+    otherAppAccess: str
+    digitalTextAccess: str
+    otherDigitalAccess: str
+    year: str
     
 
 class ModifiedParagraphSchema(BaseModel):

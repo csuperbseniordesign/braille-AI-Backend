@@ -81,7 +81,6 @@ class ModifiedParagraph(Base):
 
     id = Column(Integer, primary_key=True, index=True, unique=True)
     paragraph = Column(Text)
-    atos = Column(Float)
     # if used is 3, do not used this modified paragraph
     used = Column(Integer)
     cr_avg = Column(Float)
@@ -99,6 +98,8 @@ class ModifiedParagraph(Base):
     q2a4 = Column(String(255)) 
     interest = Column(String(100))  
     code_id = Column(String(255))
+    minAtos = Column(Float)
+    maxAtos = Column(Float)
 
 # # modified paragraph and student table. many to many relationship table
 # class StudentModifiedParagraph(Base):

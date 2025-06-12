@@ -67,7 +67,6 @@ class StudentSchemaInital(BaseModel):
 
 class ModifiedParagraphSchema(BaseModel):
     paragraph : str
-    atos : float
     ethnicity :str
     gender : str
     q1 : str
@@ -84,6 +83,8 @@ class ModifiedParagraphSchema(BaseModel):
     code_id: str
     used: int
     cr_avg: int
+    minAtos: float
+    maxAtos: float
 
 class StudentModifiedParagraphSchema(BaseModel):
     student_id : int

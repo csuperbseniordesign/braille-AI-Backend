@@ -101,7 +101,7 @@ def create_student_initial(student: StudentSchemaInital, db: Session = Depends(g
     db.add(db_student)
     db.commit()
     db.refresh(db_student)
-    return db_student
+    return db_student.id
 
 # add in the rest of the student entry for student table.check studentSchema in models.py.
 # increment the modify paragraph using the id "used" value.

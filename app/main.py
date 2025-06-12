@@ -110,31 +110,56 @@ def create_student_initial(student: StudentSchemaInital, db: Session = Depends(g
 @app.put("/students/{student_id}")
 def update_student_partial(student_id: int, update_data : StudentSchema, db: Session = Depends(get_db)):
     student = db.query(Student).filter(Student.id == student_id).first()
+
     if not student:
-        raise HTTPException(status_code=404, detail="Student not found")
+        raise HTTPException(status_code=404, detail="Student not Found")
     
-    for key, value in update_data.dict().items():
+    for key, value in update_data.model_dump().items():
         setattr(student, key, value)
-    # create student_modified_paragraph entry based on the two id from student
-    link = StudentModifiedParagraph(
-        student_id = student.id,
-        modified_paragraph_id = student.modified_paragraph_id
-    )
-    db.add(link)
-    # update the used value for the modified paragraph along with cr_avg
-    modified = db.query(ModifiedParagraph).filter_by(id=student.modified_paragraph_id).first()
-    if modified:
-        modified.used += 1
-        if modified.used == 1:
-            modified.cr_avg = (student.cr1_result + student.cr2_result + student.cr3_result + student.cr4_result +
-                            student.cr5_result + student.cr6_result + student.cr7_result + student.cr8_result) /8
+    
+    
+    modified_paragraph = db.query(ModifiedParagraph).filter_by(id=student.modified_paragraph_id).first()
+    if modified_paragraph:
+        modified_paragraph.used += 1
+
+        if modified_paragraph.used == 1:
+            modified_paragraph.cr_avg = student.cr_avg
+        
         else:
-            next_avg = (student.cr1_result + student.cr2_result + student.cr3_result + student.cr4_result +
-                            student.cr5_result + student.cr6_result + student.cr7_result + student.cr8_result) /8
-            modified.cr_avg = ((modified.cr_avg * (modified.used-1)) + next_avg) / modified.used
-        db.add(modified)
+            modified_paragraph.cr_avg = ((modified_paragraph.cr_avg * (modified_paragraph.used-1)) + student.cr_avg) / modified_paragraph.used
+        db.add(modified_paragraph)
+
     db.commit()
     db.refresh
+
+    
+    
+    # student = db.query(Student).filter(Student.id == student_id).first()
+    # if not student:
+    #     raise HTTPException(status_code=404, detail="Student not found")
+    
+    # for key, value in update_data.model_dump().items():
+    #     setattr(student, key, value)
+    # # create student_modified_paragraph entry based on the two id from student
+    # link = StudentModifiedParagraph(
+    #     student_id = student.id,
+    #     modified_paragraph_id = student.modified_paragraph_id
+    # )
+    # db.add(link)
+    # # update the used value for the modified paragraph along with cr_avg
+    # modified = db.query(ModifiedParagraph).filter_by(id=student.modified_paragraph_id).first()
+    # if modified:
+    #     modified.used += 1
+    #     if modified.used == 1:
+    #         modified.cr_avg = (student.cr1_result + student.cr2_result + student.cr3_result + student.cr4_result +
+    #                         student.cr5_result + student.cr6_result + student.cr7_result + student.cr8_result) / 8
+    #     else:
+    #         next_avg = (student.cr1_result + student.cr2_result + student.cr3_result + student.cr4_result +
+    #                         student.cr5_result + student.cr6_result + student.cr7_result + student.cr8_result) /8
+    #         modified.cr_avg = ((modified.cr_avg * (modified.used-1)) + next_avg) / modified.used
+    #     db.add(modified)
+    # db.commit()
+    # db.refresh
     
 
 @app.get("/students/{student_id}")

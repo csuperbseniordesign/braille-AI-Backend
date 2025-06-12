@@ -41,6 +41,8 @@ class StudentSchema(BaseModel):
     teacher_blank: str
     comprehension_score: int
     timeInSeconds: int
+    modified_paragraph_id: int
+    cr_avg: float
 
 
 
@@ -68,8 +70,6 @@ class StudentSchemaInital(BaseModel):
 class ModifiedParagraphSchema(BaseModel):
     paragraph : str
     atos : float
-    used : int
-    cr_avg: float
     ethnicity :str
     gender : str
     q1 : str
@@ -83,6 +83,8 @@ class ModifiedParagraphSchema(BaseModel):
     q2a3 : str
     q2a4 : str
     interest : str
+    used : int
+    cr_avg: float
 
 class StudentModifiedParagraphSchema(BaseModel):
     student_id : int

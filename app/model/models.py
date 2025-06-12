@@ -71,15 +71,16 @@ class Student(Base):
     comprehension_score = Column(Integer)
     timeInSeconds = Column(Integer)
 
-    modified_paragraph_links = relationship(
-        "StudentModifiedParagraph",
-        back_populates="student"
-    )      
+    # modified_paragraph_links = relationship(
+    #     "StudentModifiedParagraph",
+    #     back_populates="student"
+    # )      
 
 
 # modified paragraph table
 class ModifiedParagraph(Base):
     __tablename__ = "modified_paragraph"
+
     id = Column(Integer, primary_key=True, index=True, unique=True)
     paragraph = Column(Text)
     atos = Column(Float)
@@ -99,16 +100,12 @@ class ModifiedParagraph(Base):
     q2a3 = Column(String(255))
     q2a4 = Column(String(255)) 
     interest = Column(String(100))  
+    code_id = Column(String(255))
 
-    student_links = relationship(
-        "StudentModifiedParagraph",
-        back_populates= "modified_paragraph"
-    )
-
-# modified paragraph and student table. many to many relationship table
-class StudentModifiedParagraph(Base):
-    __tablename__ = "student_modified_paragraph"
-    student_id = Column(Integer, ForeignKey("student.id"), primary_key=True)
-    modified_paragraph_id = Column(Integer, ForeignKey("modified_paragraph.id"), primary_key=True)
-    student = relationship("Student", back_populates="modified_paragraph_links")
-    modified_paragraph = relationship("ModifiedParagraph", back_populates="student_links")
+# # modified paragraph and student table. many to many relationship table
+# class StudentModifiedParagraph(Base):
+#     __tablename__ = "student_modified_paragraph"
+#     student_id = Column(Integer, ForeignKey("student.id"), primary_key=True)
+#     modified_paragraph_id = Column(Integer, ForeignKey("modified_paragraph.id"), primary_key=True)
+#     student = relationship("Student", back_populates="modified_paragraph_links")
+#     modified_paragraph = relationship("ModifiedParagraph", back_populates="student_links")

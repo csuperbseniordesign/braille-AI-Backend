@@ -83,6 +83,9 @@ class ModifiedParagraphSchema(BaseModel):
     q2a3 : str
     q2a4 : str
     interest : str
+    code_id: str
+    used: int
+    cr_avg: int
 
 class StudentModifiedParagraphSchema(BaseModel):
     student_id : int

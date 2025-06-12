@@ -42,9 +42,7 @@ class Student(Base):
     vision = Column(String(255))
     preferredMedia = Column(String(255))
     appAccess = Column(String(255))
-    otherAppAccess = Column(String(255))
     digitalTextAccess = Column(String(255))
-    otherDigitalAccess = Column(String(255))
     year = Column(String(255))
 
     question1 = Column(String(255))

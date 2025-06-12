@@ -61,9 +61,7 @@ class StudentSchemaInital(BaseModel):
     vision: str
     preferredMedia: str
     appAccess: str
-    otherAppAccess: str
     digitalTextAccess: str
-    otherDigitalAccess: str
     year: str
     
 

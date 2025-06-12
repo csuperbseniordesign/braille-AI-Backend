@@ -173,7 +173,6 @@ def read_student(student_id: int, db: Session = Depends(get_db)):
 # takes a json and upload it to the modified_paragraphs table in mysql. Look at schemas.py for proper json entries
 @app.post("/modified_paragraphs/")
 def create_modified_paragraph(modified_paragraph: ModifiedParagraphSchema, db: Session = Depends(get_db)):
-    print(modified_paragraph.model_dump())
     db_modified_paragraph = ModifiedParagraph(**modified_paragraph.model_dump(exclude={"modified_paragraph_links"}))
     db.add(db_modified_paragraph)
     db.commit()

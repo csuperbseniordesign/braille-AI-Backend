@@ -62,7 +62,8 @@ def read_paragraph(interest: str,min_atos: float, max_atos : float, ethnicity : 
         ModifiedParagraph.interest == interest,
         ModifiedParagraph.ethnicity == ethnicity,
         ModifiedParagraph.gender == gender,
-        ModifiedParagraph.atos.between(min_atos,max_atos),
+        ModifiedParagraph.minAtos <= max_atos,
+        ModifiedParagraph.maxAtos >= min_atos,
         # ModifiedParagraph.used < 3
     ).all()
     if modified_query:

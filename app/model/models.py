@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Text, Boolean
-from sqlalchemy.orm import relationship, declarative_base
+from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
@@ -44,6 +44,7 @@ class Student(Base):
     appAccess = Column(String(255))
     digitalTextAccess = Column(String(255))
     year = Column(String(255))
+    timeStamp = Column(String(255))
 
     question1 = Column(String(255))
     question2 = Column(String(255))
@@ -67,12 +68,7 @@ class Student(Base):
     teacher_question7 = Column(String(255))
     teacher_blank = Column(String(255))
     comprehension_score = Column(Integer)
-    timeInSeconds = Column(Integer)
-
-    # modified_paragraph_links = relationship(
-    #     "StudentModifiedParagraph",
-    #     back_populates="student"
-    # )      
+    timeInSeconds = Column(Integer)     
 
 
 # modified paragraph table
@@ -100,11 +96,4 @@ class ModifiedParagraph(Base):
     code_id = Column(String(255))
     minAtos = Column(Float)
     maxAtos = Column(Float)
-
-# # modified paragraph and student table. many to many relationship table
-# class StudentModifiedParagraph(Base):
-#     __tablename__ = "student_modified_paragraph"
-#     student_id = Column(Integer, ForeignKey("student.id"), primary_key=True)
-#     modified_paragraph_id = Column(Integer, ForeignKey("modified_paragraph.id"), primary_key=True)
-#     student = relationship("Student", back_populates="modified_paragraph_links")
-#     modified_paragraph = relationship("ModifiedParagraph", back_populates="student_links")
+    original_paragraph_id = Column(Integer, ForeignKey("paragraph.id"))

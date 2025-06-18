@@ -43,6 +43,7 @@ class StudentSchema(BaseModel):
     timeInSeconds: int
     modified_paragraph_id: int
     cr_avg: float
+ 
 
 
 
@@ -63,6 +64,7 @@ class StudentSchemaInital(BaseModel):
     appAccess: str
     digitalTextAccess: str
     year: str
+    timeStamp: str
     
 
 class ModifiedParagraphSchema(BaseModel):
@@ -85,6 +87,7 @@ class ModifiedParagraphSchema(BaseModel):
     cr_avg: int
     minAtos: float
     maxAtos: float
+    original_paragraph_id: int
 
 class StudentModifiedParagraphSchema(BaseModel):
     student_id : int

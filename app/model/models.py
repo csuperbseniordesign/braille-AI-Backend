@@ -96,4 +96,4 @@ class ModifiedParagraph(Base):
     code_id = Column(String(255))
     minAtos = Column(Float)
     maxAtos = Column(Float)
-    original_paragraph_id = Column(Integer, ForeignKey("paragraph.id"))
+    original_paragraph_id = Column(Integer)

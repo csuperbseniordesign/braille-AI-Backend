@@ -67,7 +67,7 @@ def read_paragraph(interest: str,min_atos: float, max_atos : float, ethnicity : 
         # ModifiedParagraph.used < 3
     ).all()
     if modified_query:
-        random_modified =random.choice(modified_query)
+        random_modified = random.choice(modified_query)
         return {"source" : "modified_paragraph", "data" : random_modified}         
                 
     query = db.query(Paragraph)

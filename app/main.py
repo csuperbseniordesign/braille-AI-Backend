@@ -1,16 +1,16 @@
 from contextlib import asynccontextmanager
-from app.utils.auth import fetch_model_api_key
-from fastapi import FastAPI, Depends, Request, HTTPException
-import httpx
-import json
+from fastapi import FastAPI, Depends, HTTPException
 import random
-from app.model.models import Paragraph, Student, ModifiedParagraph
-from app.schema.schemas import ParagraphSchema, StudentSchema, ModifiedParagraphSchema, StudentModifiedParagraphSchema, StudentSchemaInital
+from fastapi.params import Header
+from app.model.models import Paragraph, Student, ModifiedParagraph, StudentCodeId
+from app.schema.schemas import ParagraphSchema, StudentSchema, ModifiedParagraphSchema, StudentSchemaInital, StudentCodeIdSchema
 from sqlalchemy.orm import Session
 from app.utils.data_formater import format_to_paragraph_object
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 from app.database.database_service import engine, SessionLocal
+
+
 
 # Lifespan context manager
 @asynccontextmanager
@@ -44,9 +44,18 @@ def get_db():
 async def root():
     return {"message": "Hello World"}
 
+# Dependency to verify code_id
+def verify_code_id(student_code_id: str = Header(...), db: Session = Depends(get_db)):
+    exists = db.query(StudentCodeId).filter(StudentCodeId.code_id == student_code_id).first()
+
+    if not exists:
+        raise HTTPException(status_code=404, detail="Invalid code_id")
+    
+    return student_code_id
+
 # takes a json and upload it to the paragraphs table in mysql. Look at schemas.py for proper json entries
 @app.post("/paragraphs/")
-def create_paragraph(paragraph: ParagraphSchema, db: Session = Depends(get_db)):
+def create_paragraph(paragraph: ParagraphSchema, db: Session = Depends(get_db), code_id: str = Depends(verify_code_id)):
     db_paragraph = Paragraph(**paragraph.model_dump())
     db.add(db_paragraph)
     db.commit()
@@ -57,7 +66,7 @@ def create_paragraph(paragraph: ParagraphSchema, db: Session = Depends(get_db)):
 ## get json paragraph or modified paragraph based on interest and atos
 ## check modified paragraph table first and if used is < 3. otherwise, select from paragraph table
 @app.get("/paragraphs/{interest}/{min_atos}/{max_atos}/{ethnicity}/{gender}")
-def read_paragraph(interest: str,min_atos: float, max_atos : float, ethnicity : str, gender : str, db: Session = Depends(get_db)):
+def read_paragraph(interest: str,min_atos: float, max_atos : float, ethnicity : str, gender : str, db: Session = Depends(get_db), code_id: str = Depends(verify_code_id)):
     modified_query = db.query(ModifiedParagraph).filter(
         ModifiedParagraph.interest == interest,
         ModifiedParagraph.ethnicity == ethnicity,
@@ -81,7 +90,7 @@ def read_paragraph(interest: str,min_atos: float, max_atos : float, ethnicity : 
 
 # Returns questions from a specific paragraph with the requested name
 @app.get("/paragraph/{paragraph_id}/{name}")
-def get_paragraph(paragraph_id: int, name: str, db: Session = Depends(get_db)):
+def get_paragraph(paragraph_id: int, name: str, db: Session = Depends(get_db), code_id: str = Depends(verify_code_id)):
     paragraph = db.query(Paragraph).filter(Paragraph.id == paragraph_id).first()
     
     if not paragraph:
@@ -96,7 +105,7 @@ def get_paragraph(paragraph_id: int, name: str, db: Session = Depends(get_db)):
 # used in demographic form
 # check StudentSchemaInital from schemas.py to know which json field to pass
 @app.post("/students/")
-def create_student_initial(student: StudentSchemaInital, db: Session = Depends(get_db)):
+def create_student_initial(student: StudentSchemaInital, db: Session = Depends(get_db), code_id: str = Depends(verify_code_id)):
     # create student entry
     db_student = Student(**student.model_dump())
     db.add(db_student)
@@ -109,7 +118,7 @@ def create_student_initial(student: StudentSchemaInital, db: Session = Depends(g
 # add entry for student_modified_paragraph table. 
 # takes a json and upload it to the students table in mysql. Look at schemas.py for proper json entries
 @app.put("/students/{student_id}")
-def update_student_partial(student_id: int, update_data : StudentSchema, db: Session = Depends(get_db)):
+def update_student_partial(student_id: int, update_data : StudentSchema, db: Session = Depends(get_db), code_id: str = Depends(verify_code_id)):
     student = db.query(Student).filter(Student.id == student_id).first()
 
     if not student:
@@ -164,7 +173,7 @@ def update_student_partial(student_id: int, update_data : StudentSchema, db: Ses
     
 
 @app.get("/students/{student_id}")
-def read_student(student_id: int, db: Session = Depends(get_db)):
+def read_student(student_id: int, db: Session = Depends(get_db), code_id: str = Depends(verify_code_id)):
     student = db.query(Student).filter(Student.id == student_id).first()
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
@@ -173,7 +182,7 @@ def read_student(student_id: int, db: Session = Depends(get_db)):
 # second endpoint to be used. store the modify paragraph entry
 # takes a json and upload it to the modified_paragraphs table in mysql. Look at schemas.py for proper json entries
 @app.post("/modified_paragraphs/")
-def create_modified_paragraph(modified_paragraph: ModifiedParagraphSchema, db: Session = Depends(get_db)):
+def create_modified_paragraph(modified_paragraph: ModifiedParagraphSchema, db: Session = Depends(get_db), code_id: str = Depends(verify_code_id)):
     db_modified_paragraph = ModifiedParagraph(**modified_paragraph.model_dump(exclude={"modified_paragraph_links"}))
     db.add(db_modified_paragraph)
     db.commit()
@@ -181,7 +190,7 @@ def create_modified_paragraph(modified_paragraph: ModifiedParagraphSchema, db: S
     return db_modified_paragraph
 
 @app.get("/modified_paragraphs/{modified_paragraph_id}")
-def read_modified_paragraph(modified_paragraph_id: int, db: Session = Depends(get_db)):
+def read_modified_paragraph(modified_paragraph_id: int, db: Session = Depends(get_db), code_id: str = Depends(verify_code_id)):
     modified_paragraph = db.query(ModifiedParagraph).filter(ModifiedParagraph.id == modified_paragraph_id).first()
     if not modified_paragraph:
         raise HTTPException(status_code=404, detail="Modified Paragraph not found")

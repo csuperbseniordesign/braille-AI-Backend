@@ -92,3 +92,6 @@ class ModifiedParagraphSchema(BaseModel):
 class StudentModifiedParagraphSchema(BaseModel):
     student_id : int
     modified_paragraph_id : int
+
+class StudentCodeIdSchema(BaseModel):
+    code_id: str

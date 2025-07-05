@@ -97,3 +97,8 @@ class ModifiedParagraph(Base):
     minAtos = Column(Float)
     maxAtos = Column(Float)
     original_paragraph_id = Column(Integer)
+
+# code id table
+class StudentCodeId(Base):
+    __tablename__ = "student_id"
+    code_id = Column(String(255), primary_key=True, unique=True)

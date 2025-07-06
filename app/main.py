@@ -9,7 +9,7 @@ from app.utils.data_formater import format_to_paragraph_object
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 from app.database.database_service import engine, SessionLocal
-
+from fastapi.middleware.cors import CORSMiddleware
 
 
 # Lifespan context manager
@@ -31,6 +31,10 @@ async def lifespan(app: FastAPI):
 
 # Base.metadata.create_all(bind=engine)
 app = FastAPI(lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_headers=["*"],
+)
 
 def get_db():
     db = SessionLocal()

@@ -1,12 +1,12 @@
 # python lightweight image
-FROM python:3.13.1-slim
+FROM python:3.13.1
 
 # set working dir in container
 WORKDIR /app
 
 # copy & install dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
 
 # Copy the code base into the container
 COPY ./app ./app

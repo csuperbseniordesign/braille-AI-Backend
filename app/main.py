@@ -33,7 +33,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "https://production.d1dfl6c2j787ys.amplifyapp.com/"],
+    allow_origins=["http://localhost:5173", "https://production.d1dfl6c2j787ys.amplifyapp.com"],
     allow_methods=["*"],                   
     allow_headers=["*"],
 )

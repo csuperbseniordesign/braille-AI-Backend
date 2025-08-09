@@ -66,7 +66,7 @@ class Student(Base):
     teacher_question5 = Column(String(255))
     teacher_question6 = Column(String(255))
     teacher_question7 = Column(String(255))
-    teacher_blank = Column(String(255))
+    teacher_feedback = Column(Text)
     comprehension_score = Column(Integer)
     timeInSeconds = Column(Integer)     
 

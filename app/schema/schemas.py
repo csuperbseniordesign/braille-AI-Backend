@@ -30,7 +30,7 @@ class StudentSchema(BaseModel):
     endingQuestion2 : str
     endingQuestion3 : str
     endingQuestion4 : str
-    blank : str
+    feedback : str
     teacher_question1 : str
     teacher_question2 : str
     teacher_question3: str

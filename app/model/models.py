@@ -58,7 +58,7 @@ class Student(Base):
     endingQuestion2 = Column(String(255))
     endingQuestion3 = Column(String(255))
     endingQuestion4 = Column(String(255))
-    blank = Column(String(255))
+    feedback = Column(Text)
     teacher_question1 = Column(String(255))
     teacher_question2 = Column(String(255))
     teacher_question3 = Column(String(255))

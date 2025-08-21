@@ -34,6 +34,7 @@ app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "https://production.d28lo1xwcra81p.amplifyapp.com"],
+    allow_credentials=True,
     allow_methods=["*"],                   
     allow_headers=["*"],
 )

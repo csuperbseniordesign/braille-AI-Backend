@@ -30,7 +30,7 @@ class StudentSchema(BaseModel):
     endingQuestion2 : str
     endingQuestion3 : str
     endingQuestion4 : str
-    blank : str
+    feedback : str
     teacher_question1 : str
     teacher_question2 : str
     teacher_question3: str
@@ -38,7 +38,7 @@ class StudentSchema(BaseModel):
     teacher_question5: str
     teacher_question6: str
     teacher_question7: str
-    teacher_blank: str
+    teacher_feedback: str
     comprehension_score: int
     timeInSeconds: int
     modified_paragraph_id: int

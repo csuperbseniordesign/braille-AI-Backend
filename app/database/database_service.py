@@ -12,5 +12,6 @@ DATABASE_URL = f"mysql+mysqlconnector://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOS
 
 # set up SQLAlchemy
 engine = create_engine(DATABASE_URL)
+
 SessionLocal = sessionmaker(autocommit = False, autoflush=False, bind=engine)
 

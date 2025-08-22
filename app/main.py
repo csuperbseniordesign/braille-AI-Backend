@@ -103,7 +103,9 @@ def get_paragraph(paragraph_id: int, name: str, db: Session = Depends(get_db), c
     if not paragraph:
         print(f"Paragraph with ID {paragraph_id} not found.")  # Logs the issue
         raise HTTPException(status_code=404, detail=f"Paragraph {paragraph_id} not found")
-
+    
+    print(f'paragraph {paragraph.paragraph}')
+    print(f'name {name}')
     formatted_paragraph = format_to_paragraph_object(paragraph, name)
     
     

@@ -12,7 +12,7 @@ def modify_question(questions: dict, name: str, api_key: str) -> dict:
     data = {
         "model": "deepseek-chat",
         "messages" : [
-            {"role": "system", "content": f"Change the name to {name}"},
+            {"role": "system", "content": f"Change the name to {name} and change output to json format."},
             {"role": "user", "content" : f"{questions}"},
         ],
         "stream": False

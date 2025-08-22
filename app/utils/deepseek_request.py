@@ -8,11 +8,30 @@ def modify_question(questions: dict, name: str, api_key: str) -> dict:
         "Content-Type": "application/json",
         "Authorization": f'Bearer {api_key}'
     }
+    schema = """{
+            "questions": [
+                {
+                "question": "string",
+                "options": ["string", "string", "string", "string"],
+                "answer": "string"
+            }
+        ]
+    }"""
 
     data = {
         "model": "deepseek-chat",
         "messages" : [
-            {"role": "system", "content": f"Change the name to {name} and change output to json format."},
+            {
+            "role": "system",
+            "content": (
+                f"You are a JSON generator. Always respond ONLY with valid JSON matching this schema:\n\n"
+                f"{schema}\n\n"
+                "Do not include any additional keys. "
+                "Do not include the name as a JSON key. "
+                f"Only update the content of the questions/answers as instructed."
+                f"Change the name to {name} and output strictly in JSON format."
+            )
+        },
             {"role": "user", "content" : f"{questions}"},
         ],
         "stream": False

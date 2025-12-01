@@ -70,7 +70,8 @@ class Student(Base):
     teacher_question7 = Column(String(255))
     teacher_feedback = Column(Text)
     comprehension_score = Column(Integer)
-    timeInSeconds = Column(Integer)     
+    timeInSeconds = Column(Integer)
+    modified_paragraph_id = Column(Integer)     
 
 
 # modified paragraph table

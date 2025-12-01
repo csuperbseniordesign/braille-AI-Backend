@@ -5,7 +5,7 @@ Base = declarative_base()
 
 # table for preselected paragraph
 class Paragraph(Base):
-    __tablename__ = "paragraph"
+    __tablename__ = "mytable"
     id = Column(Integer, primary_key=True, index=True,unique=True)
     title = Column(String(255), index=True)
     paragraph = Column(Text)
@@ -22,6 +22,8 @@ class Paragraph(Base):
     q2a3 = Column(String(255))
     q2a4 = Column(String(255))
     interest = Column(String(255))
+    mainlabel = Column(String(255))
+    sublabel = Column(String(255))
 
 # table for student 
 class Student(Base):

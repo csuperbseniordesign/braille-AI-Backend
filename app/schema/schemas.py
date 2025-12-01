@@ -16,6 +16,8 @@ class ParagraphSchema(BaseModel):
     q2a3: str
     q2a4: str
     interest: str
+    primarylabel: str
+    sublabel: str
 
 class StudentSchema(BaseModel):
     question1: str

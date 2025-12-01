@@ -72,23 +72,25 @@ def create_paragraph(paragraph: ParagraphSchema, db: Session = Depends(get_db), 
 ## this is primarily the first endpoint when subject enter the student demographic form fields
 ## get json paragraph or modified paragraph based on interest and atos
 ## check modified paragraph table first and if used is < 3. otherwise, select from paragraph table
-@app.get("/paragraphs/{interest}/{min_atos}/{max_atos}/{ethnicity}/{gender}")
-def read_paragraph(interest: str,min_atos: float, max_atos : float, ethnicity : str, gender : str, db: Session = Depends(get_db), code_id: str = Depends(verify_code_id)):
-    modified_query = db.query(ModifiedParagraph).filter(
-        ModifiedParagraph.interest == interest,
-        ModifiedParagraph.ethnicity == ethnicity,
-        ModifiedParagraph.gender == gender,
-        ModifiedParagraph.minAtos <= max_atos,
-        ModifiedParagraph.maxAtos >= min_atos,
-        # ModifiedParagraph.used < 3
-    ).all()
-    if modified_query:
-        random_modified = random.choice(modified_query)
-        return {"source" : "modified_paragraph", "data" : random_modified}         
+@app.get("/paragraphs/{interest}/{mainlabel}/{sublabel}/{min_atos}/{max_atos}/{ethnicity}/{gender}")
+def read_paragraph(interest: str,mainlabel: str, sublabel: str,min_atos: float, max_atos : float, ethnicity : str, gender : str, db: Session = Depends(get_db), code_id: str = Depends(verify_code_id)):
+    # modified_query = db.query(ModifiedParagraph).filter(
+    #     ModifiedParagraph.interest == interest,
+    #     ModifiedParagraph.ethnicity == ethnicity,
+    #     ModifiedParagraph.gender == gender,
+    #     ModifiedParagraph.minAtos <= max_atos,
+    #     ModifiedParagraph.maxAtos >= min_atos,
+    #     # ModifiedParagraph.used < 3
+    # ).all()
+    # if modified_query:
+    #     random_modified = random.choice(modified_query)
+    #     return {"source" : "modified_paragraph", "data" : random_modified}         
                 
     query = db.query(Paragraph)
     query = query.filter(Paragraph.atos.between(min_atos, max_atos))
     query = query.filter(Paragraph.interest == interest)
+    query = query.filter(Paragraph.mainlabel == mainlabel)
+    query = query.filter(Paragraph.sublabel == sublabel)
     paragraph = query.all()
     if not paragraph:
         raise HTTPException(status_code=404, detail="Paragraph not found")

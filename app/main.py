@@ -1,6 +1,8 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Request
 import random
+import httpx
+import os
 from fastapi.params import Header
 from app.model.models import Paragraph, Student, ModifiedParagraph, StudentCodeId
 from app.schema.schemas import ParagraphSchema, StudentSchema, ModifiedParagraphSchema, StudentSchemaInital, StudentCodeIdSchema
@@ -10,7 +12,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 from app.database.database_service import engine, SessionLocal
 from fastapi.middleware.cors import CORSMiddleware
-
+from app.utils.auth import fetch_model_api_key
 
 # Lifespan context manager
 @asynccontextmanager
@@ -59,6 +61,92 @@ def verify_code_id(student_code_id: str = Header(...), db: Session = Depends(get
         raise HTTPException(status_code=404, detail="Invalid code_id")
     
     return student_code_id
+
+
+@app.post("/proxy/deepseek")
+async def proxy_deepseek(
+    request: Request, 
+    db: Session = Depends(get_db), 
+    code_id: str = Depends(verify_code_id)
+):
+    """Proxy requests to DeepSeek API to avoid CORS issues"""
+    try:
+        body = await request.json()
+        print(f"Received request body: {body}")  # Debug log
+        
+        api_key = fetch_model_api_key()  # Use your existing helper function
+        print(f"API Key present: {bool(api_key)}")  # Debug log
+        
+        if not api_key:
+            raise HTTPException(status_code=500, detail="DeepSeek API key not configured")
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                "https://api.deepseek.com/chat/completions",
+                json=body,
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json"
+                },
+                timeout=60.0
+            )
+            
+            print(f"DeepSeek response status: {response.status_code}")  # Debug log
+            return response.json()
+        
+    except httpx.TimeoutException as e:
+        print(f"Timeout error: {e}")  # Debug log
+        raise HTTPException(status_code=504, detail="DeepSeek API request timed out")
+    except httpx.HTTPError as e:
+        print(f"HTTP error: {e}")  # Debug log
+        raise HTTPException(status_code=502, detail=f"DeepSeek API error: {str(e)}")
+    except Exception as e:
+        print(f"Unexpected error: {type(e).__name__}: {e}")  # Debug log
+        import traceback
+        traceback.print_exc()  # Print full traceback
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/students/by-code/{code_id}")
+def get_student_by_code(code_id: str = Depends(verify_code_id), db: Session = Depends(get_db)):
+    """Get the most recent student entry for a given code_id"""
+    # First verify the code_id exists
+    code_exists = db.query(StudentCodeId).filter(StudentCodeId.code_id == code_id).first()
+    
+    if not code_exists:
+        raise HTTPException(status_code=404, detail="Invalid code_id")
+    
+    # Get the most recent student entry for this code_id
+    student = db.query(Student).filter(
+        Student.code_id == code_id
+    ).order_by(Student.id.desc()).first()
+    
+    if student:
+        return {
+            "exists": True,
+            "student": {
+                "gradeLevel": student.gradeLevel,
+                "readingLevel": student.readingLevel,
+                "year": student.year,
+                "ethnicity": student.ethnicity,
+                "gender": student.gender,
+                "familyBackground": student.familyBackground,
+                "birthPlace": student.birthPlace,
+                "region": student.region,
+                "primaryInterest": student.primaryInterest,
+                "languages": student.languages,
+                "country": student.country,
+                "vision": student.vision,
+                "preferredMedia": student.preferredMedia,
+                "appAccess": student.appAccess,
+                "digitalTextAccess": student.digitalTextAccess,
+            }
+            
+        }
+    else:
+        return {
+            "exists": False,
+            "student": None
+        }
 
 # takes a json and upload it to the paragraphs table in mysql. Look at schemas.py for proper json entries
 @app.post("/paragraphs/")
@@ -151,7 +239,8 @@ def update_student_partial(student_id: int, update_data : StudentSchema, db: Ses
         db.add(modified_paragraph)
 
     db.commit()
-    db.refresh
+    db.refresh(student)
+    return student
 
     
     

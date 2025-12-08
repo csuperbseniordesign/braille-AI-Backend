@@ -2,21 +2,28 @@ from app.model.models import Paragraph
 from app.utils.auth import fetch_model_api_key
 from app.utils.deepseek_request import modify_question
 
-def refine_option(option: list) -> list:
+def refine_option(options: list) -> tuple[str, list[str]]:
+    """
+    Extracts the correct answer based on '*' or '\\*' prefix
+    and returns (answer, cleaned_options).
+    """
     answer = ""
-    option_list = []
+    cleaned_options = []
 
-    for i in range(len(option)):
-        answer_option = option[i]
-        
-        if option[i].startswith("\\*"):
-            answer = answer_option.replace("\\*", "")
-            option_list.append(answer.strip())
+    for opt in options:
+        stripped = opt.strip()
 
+        # Detect correct answer if it starts with '*' OR '\*'
+        if stripped.startswith("*") or stripped.startswith("\\*"):
+            # Remove ANY leading '*' or '\*'
+            cleaned = stripped.lstrip("*").lstrip("\\*").strip()
+            answer = cleaned
+            cleaned_options.append(cleaned)
         else:
-            option_list.append(answer_option.strip())
-    
-    return answer.strip(), option_list
+            cleaned_options.append(stripped)
+
+    return answer, cleaned_options
+
 
 def format_to_paragraph_object(paragraph: Paragraph, target_name: str) -> dict:
     # get deepseek api key

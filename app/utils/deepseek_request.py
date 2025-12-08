@@ -6,50 +6,68 @@ def modify_question(questions: dict, name: str, api_key: str) -> dict:
     url = "https://api.deepseek.com/chat/completions"
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f'Bearer {api_key}'
+        "Authorization": f"Bearer {api_key}",
     }
+
     schema = """{
-            "questions": [
-                {
-                "question": "string",
-                "options": ["string", "string", "string", "string"],
-                "answer": "string"
-            }
-        ]
+      "questions": [
+        {
+          "question": "string",
+          "options": ["string", "string", "string", "string"],
+          "answer": "string"
+        }
+      ]
     }"""
+
+    system_content = f"""
+You are a JSON generator. Always respond ONLY with valid JSON matching this schema:
+
+{schema}
+
+Input will already follow this schema.
+
+Transformation rules:
+1. Replace ANY person/character names in "question", "options", and "answer" with "{name}".
+2. Update pronouns to match the name's gender.
+3. Do NOT change which option is correct:
+   - The "answer" field must remain the same option as in the input (only name/pronoun changes allowed).
+   - Do NOT reorder options.
+   - Do NOT add or remove options.
+4. Do NOT change any other words except for names and pronouns.
+5. Do NOT include asterisks (*) anywhere in the output.
+6. Do NOT wrap the JSON in markdown or backticks. Respond with raw JSON only.
+7. Do NOT include any additional keys or metadata.
+
+Output strictly valid JSON and nothing else.
+""".strip()
 
     data = {
         "model": "deepseek-chat",
-        "messages" : [
+        "messages": [
             {
-            "role": "system",
-            "content": (
-                f"You are a JSON generator. Always respond ONLY with valid JSON matching this schema:\n\n"
-                f"{schema}\n\n"
-                "Do not include any additional keys. "
-                "Do not include the name as a JSON key. "
-                f"Only update the content of the questions/answers as instructed."
-                f"Change the name to {name} and output strictly in JSON format."
-            )
-        },
-            {"role": "user", "content" : f"{questions}"},
+                "role": "system",
+                "content": system_content,
+            },
+            {
+                "role": "user",
+                "content": json.dumps(questions),
+            },
         ],
-        "stream": False
+        "stream": False,
     }
 
-    # Make the API request
     response = requests.post(url, json=data, headers=headers)
 
-    # Check for success
     if response.status_code == 200:
         response_data = response.json()
-        return post_process_json(response_data['choices'][0]['message']['content'])
-    
+        content = response_data["choices"][0]["message"]["content"]
+        return post_process_json(content)
     else:
-       print(f"Error {response.status_code}: {response.text}")
-       return questions
+        print(f"Error {response.status_code}: {response.text}")
+        return questions  # fallback
 
 
+# modify_question.py (or wherever this function is)
 def post_process_json(response_text: str) -> dict: 
     match = re.search(r'```json\n({.*?})\n```', response_text, re.DOTALL)
 
@@ -57,6 +75,12 @@ def post_process_json(response_text: str) -> dict:
         json_string = match.group(1)
         data = json.loads(json_string)
         return data
-    
     else:
-       return response_text
+        # Try to parse the response directly
+        try:
+            return json.loads(response_text)
+        except json.JSONDecodeError:
+            if isinstance(response_text, dict):
+                return response_text
+            print(f"Failed to parse JSON: {response_text}")
+            return {"questions": []}

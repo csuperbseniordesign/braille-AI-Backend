@@ -11,7 +11,8 @@ def refine_option(options: list) -> tuple[str, list[str]]:
     cleaned_options = []
 
     for opt in options:
-        stripped = opt.strip()
+        stripped = (opt or "").strip()
+
 
         # Detect correct answer if it starts with '*' OR '\*'
         if stripped.startswith("*") or stripped.startswith("\\*"):

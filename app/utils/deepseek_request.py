@@ -2,7 +2,7 @@ import requests
 import re
 import json
 
-def modify_question(questions: dict, name: str, api_key: str) -> dict:
+def modify_question(questions: dict, name: str, gender: str, api_key: str) -> dict:
     url = "https://api.deepseek.com/chat/completions"
     headers = {
         "Content-Type": "application/json",
@@ -28,7 +28,11 @@ Input will already follow this schema.
 
 Transformation rules:
 1. Replace ANY person/character names in "question", "options", and "answer" with "{name}".
-2. Update pronouns to match the name's gender.
+2. Update pronouns of the main character to match with "{gender}".
+2a. If "{gender}" = "male", use “he/him/his/himself” for the main character.
+2b. If "{gender}" = "female", use “she/her/her/herself” for the main character.
+2c. If "{gender}" = "nonbinary", use “they/them/their/themselves” for the main character.
+2d. Change only pronouns referring to the main character; do not change pronouns referring to other entities.
 3. Do NOT change which option is correct:
    - The "answer" field must remain the same option as in the input (only name/pronoun changes allowed).
    - Do NOT reorder options.

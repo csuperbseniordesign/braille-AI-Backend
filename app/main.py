@@ -186,8 +186,8 @@ def read_paragraph(interest: str,mainlabel: str, sublabel: str,min_atos: float, 
   
 
 # Returns questions from a specific paragraph with the requested name
-@app.get("/paragraph/{paragraph_id}/{name}")
-def get_paragraph(paragraph_id: int, name: str, db: Session = Depends(get_db), code_id: str = Depends(verify_code_id)):
+@app.get("/paragraph/{paragraph_id}/{name}/{gender}")
+def get_paragraph(paragraph_id: int, name: str, gender: str, db: Session = Depends(get_db), code_id: str = Depends(verify_code_id)):
     paragraph = db.query(Paragraph).filter(Paragraph.id == paragraph_id).first()
     
     if not paragraph:
@@ -196,7 +196,7 @@ def get_paragraph(paragraph_id: int, name: str, db: Session = Depends(get_db), c
     
     print(f'paragraph {paragraph.paragraph}')
     print(f'name {name}')
-    formatted_paragraph = format_to_paragraph_object(paragraph, name)
+    formatted_paragraph = format_to_paragraph_object(paragraph, name, gender)
     
     
     return formatted_paragraph

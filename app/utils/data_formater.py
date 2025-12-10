@@ -11,7 +11,8 @@ def refine_option(options: list) -> tuple[str, list[str]]:
     cleaned_options = []
 
     for opt in options:
-        stripped = opt.strip()
+        stripped = (opt or "").strip()
+
 
         # Detect correct answer if it starts with '*' OR '\*'
         if stripped.startswith("*") or stripped.startswith("\\*"):
@@ -25,7 +26,7 @@ def refine_option(options: list) -> tuple[str, list[str]]:
     return answer, cleaned_options
 
 
-def format_to_paragraph_object(paragraph: Paragraph, target_name: str) -> dict:
+def format_to_paragraph_object(paragraph: Paragraph, target_name: str, target_gender: str) -> dict:
     # get deepseek api key
     api_key = fetch_model_api_key()
 
@@ -54,6 +55,6 @@ def format_to_paragraph_object(paragraph: Paragraph, target_name: str) -> dict:
         return paragraph
     
     # call api to modify name and pronouns in questions
-    modified_question = modify_question(questions=questions, name=target_name, api_key=api_key)
+    modified_question = modify_question(questions=questions, name=target_name, gender=target_gender, api_key=api_key)
 
     return modified_question

@@ -2,7 +2,7 @@ import requests
 import re
 import json
 
-def modify_question(questions: dict, name: str, api_key: str) -> dict:
+def modify_question(questions: dict, name: str, gender: str, api_key: str) -> dict:
     url = "https://api.deepseek.com/chat/completions"
     headers = {
         "Content-Type": "application/json",
@@ -26,9 +26,29 @@ You are a JSON generator. Always respond ONLY with valid JSON matching this sche
 
 Input will already follow this schema.
 
-Transformation rules:
-1. Replace ANY person/character names in "question", "options", and "answer" with "{name}".
-2. Update pronouns to match the name's gender.
+CRITICAL INSTRUCTIONS:
+
+NAME REPLACEMENT:
+1. Identify the MAIN character in the input questions. This is typically:
+   - The character mentioned first
+   - The character the questions are primarily about
+   - The character performing the main actions
+2. Replace THAT SPECIFIC CHARACTER'S NAME ONLY with "{name}" in ALL occurrences in:
+   - "question" field
+   - "options" array
+   - "answer" field
+3. Do NOT change other characters' names. Only replace the main character's name.
+
+PRONOUN REPLACEMENT:
+1. Update ONLY the main character's pronouns:
+   - If "{gender}" = "male": use he/him/his/himself
+   - If "{gender}" = "female": use she/her/her/herself
+   - If "{gender}" = "nonbinary": use they/them/their/themselves
+2. Change pronouns ONLY when they clearly refer to the main character.
+3. Make necessary grammatical adjustments for subject-verb agreement.
+
+
+2d. Change only pronouns referring to the main character; do not change pronouns referring to other entities.
 3. Do NOT change which option is correct:
    - The "answer" field must remain the same option as in the input (only name/pronoun changes allowed).
    - Do NOT reorder options.
@@ -37,6 +57,7 @@ Transformation rules:
 5. Do NOT include asterisks (*) anywhere in the output.
 6. Do NOT wrap the JSON in markdown or backticks. Respond with raw JSON only.
 7. Do NOT include any additional keys or metadata.
+8. Do NOT change all names to "${name}" – only the primary/main character
 
 Output strictly valid JSON and nothing else.
 """.strip()

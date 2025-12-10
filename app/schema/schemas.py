@@ -41,6 +41,14 @@ class StudentSchema(BaseModel):
     teacher_question6: str
     teacher_question7: str
     teacher_feedback: str
+    cr1_question: str
+    cr1_result: int
+    cr1_user_answer: str
+    cr1_correct_answer: str
+    cr2_question: str
+    cr2_result: int
+    cr2_user_answer: str
+    cr2_correct_answer: str
     comprehension_score: int
     timeInSeconds: int
     modified_paragraph_id: int
@@ -54,11 +62,14 @@ class StudentSchemaInital(BaseModel):
     gradeLevel : str
     readingLevel : str
     ethnicity : str
+    ethnic_subgroup : str
     gender: str
-    familyBackground: str
+    hispanic_latino_origin : str
     birthPlace: str
     region: str
     primaryInterest: str
+    mainlabel: str
+    sublabel: str
     languages: str
     country: str
     vision: str
@@ -84,6 +95,8 @@ class ModifiedParagraphSchema(BaseModel):
     q2a3 : str
     q2a4 : str
     interest : str
+    mainlabel : str
+    sublabel : str
     code_id: str
     used: int
     cr_avg: int

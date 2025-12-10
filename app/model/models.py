@@ -34,11 +34,26 @@ class Student(Base):
     gradeLevel = Column(String(255))
     readingLevel = Column(String(255))
     ethnicity = Column(String(255))
+    ethnic_subgroup = Column(String(255))
     gender = Column(String(255))
-    familyBackground = Column(String(255))
+    hispanic_latino_origin = Column(String(255))
     birthPlace = Column(String(255))
     region = Column(String(255))
     primaryInterest = Column(String(255))
+    primaryInterest = Column(String(255))
+    mainlabel = Column(String(255))  
+    sublabel = Column(String(255))
+    # Question 1
+    cr1_question = Column(Text)      # NEW - stores the actual question text
+    cr1_result = Column(Integer)     # 1 for correct, 0 for incorrect
+    cr1_user_answer = Column(Text)   # NEW - stores what the user answered
+    cr1_correct_answer = Column(Text) # NEW - stores the correct answer
+    
+    # Question 2
+    cr2_question = Column(Text)      # NEW
+    cr2_result = Column(Integer)
+    cr2_user_answer = Column(Text)   # NEW
+    cr2_correct_answer = Column(Text) # NEW   
     languages = Column(String(255))
     country = Column(String(255))
     vision = Column(String(255))
@@ -95,7 +110,9 @@ class ModifiedParagraph(Base):
     q2a2 = Column(String(255))
     q2a3 = Column(String(255))
     q2a4 = Column(String(255)) 
-    interest = Column(String(100))  
+    interest = Column(String(100))
+    mainlabel = Column(String(255))
+    sublabel = Column(String(255))  
     code_id = Column(String(255))
     minAtos = Column(Float)
     maxAtos = Column(Float)
